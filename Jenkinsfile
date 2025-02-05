@@ -1,19 +1,23 @@
-#!/bin/bash
 pipeline {
     agent any
-
+    
     stages {
-        stage('Build and Push Docker Image') {
+        stage('Checkout') {
             steps {
-                // Grant executable permissions to the build script
-                sh 'chmod +x deploy.sh'
-
-                // Build the Docker image using the build script
-                sh './deploy.sh'
-
-                
+                checkout scm
             }
         }
-
+        
+        stage('Build and Push Docker Image') {
+            steps {
+                withEnv(['PATH+DOCKER=/usr/local/bin']) {
+                    script {
+                        // Run the deploy.sh script with Docker command available
+                        sh 'chmod +x deploy.sh'
+                        sh './deploy.sh'
+                    }
+                }
+            }
+        }
     }
 }
