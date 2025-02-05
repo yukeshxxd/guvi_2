@@ -1,3 +1,13 @@
+#!/bin/bash
+set -e  # Stop script on error
+
+# Check if Docker is installed
+if ! command -v docker &> /dev/null; then
+    echo "⚠️ ERROR: Docker is not installed or not accessible!"
+    exit 1
+fi
+
+echo "✅ Docker is installed, proceeding..."
 echo hi123
     sh 'chmod +x build.sh'
     sh './build.sh'
