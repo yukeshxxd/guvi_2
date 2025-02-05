@@ -1,24 +1,31 @@
-#!/bin/bash
+pipeline {
+    agent any
 
-echo "hi123"
+    environment {
+        DOCKER_USERNAME = 'yukeshh'
+        DOCKER_PASSWORD = '9095859072'
+    }
 
-# Ensure script exits on errors
-set -e
-
-# Make build.sh executable
-chmod +x build.sh
-
-# Run build script
-./build.sh
-
-# Log in to Docker securely
-echo "Logging into Docker..."
-echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-
-# Tag Docker image
-docker tag test "$DOCKER_USERNAME/docker_jenkins_task2"
-
-# Push Docker image
-docker push "$DOCKER_USERNAME/docker_jenkins_task2"
-
-echo "Docker image pushed successfully!"
+    stages {
+        stage('Build and Push Docker Image') {
+            steps {
+                echo 'hi123'
+                
+                // Make build.sh executable
+                sh 'chmod +x build.sh'
+                
+                // Run build script
+                sh './build.sh'
+                
+                // Log in to Docker
+                sh 'echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin'
+                
+                // Tag Docker image
+                sh 'docker tag test yukeshh/docker_jenkins_task2'
+                
+                // Push Docker image
+                sh 'docker push yukeshh/docker_jenkins_task2'
+            }
+        }
+    }
+}
