@@ -1,19 +1,27 @@
-#!/bin/bash
 pipeline {
     agent any
-
+    environment {
+        PATH = "/usr/local/bin:${env.PATH}"  // Ensure the path to Docker is in the PATH
+    }
     stages {
-        stage('Build and Push Docker Image') {
+        stage('Checkout SCM') {
             steps {
-                // Grant executable permissions to the build script
-                sh 'chmod +x deploy.sh'
-
-                // Build the Docker image using the build script
-                sh './deploy.sh'
-
-                
+                checkout scm
             }
         }
+        stage('Build and Push Docker Image') {
+            steps {
+                script {
+                    // Use full path to Docker
+                    sh '/usr/local/bin/docker --version'
 
+                    // Grant execute permission to the scripts
+                    sh 'chmod +x deploy.sh build.sh'
+
+                    // Run the deploy script
+                    sh './deploy.sh'
+                }
+            }
+        }
     }
 }
